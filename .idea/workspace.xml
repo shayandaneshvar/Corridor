@@ -14,7 +14,7 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="375">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/controller/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="476">
@@ -119,11 +119,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/view/View.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="34" column="68" selection-start-line="34" selection-start-column="68" selection-end-line="34" selection-end-column="68" />
+            <state relative-caret-position="638">
+              <caret line="54" column="36" lean-forward="true" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#278#279#0" expanded="true" />
@@ -169,8 +169,8 @@
         <option value="$PROJECT_DIR$/src/main/java/model/Block.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/Controller.java" />
         <option value="$PROJECT_DIR$/src/main/java/model/Board.java" />
-        <option value="$PROJECT_DIR$/src/main/java/view/View.java" />
         <option value="$PROJECT_DIR$/src/main/java/controller/Main.java" />
+        <option value="$PROJECT_DIR$/src/main/java/view/View.java" />
       </list>
     </option>
   </component>
@@ -292,12 +292,12 @@
       <option name="presentableId" value="Default" />
       <updated>1562731632061</updated>
       <workItem from="1562731696070" duration="7046000" />
-      <workItem from="1562744257438" duration="12464000" />
+      <workItem from="1562744257438" duration="12780000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="19510000" />
+    <option name="totallyTimeSpent" value="19826000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1920" height="1040" extended-state="0" />
@@ -364,16 +364,6 @@
           <folding>
             <element signature="e#12962#12963#0" expanded="true" />
             <element signature="e#12989#12990#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/controller/Controller.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -447,19 +437,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/view/View.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="34" column="68" selection-start-line="34" selection-start-column="68" selection-end-line="34" selection-end-column="68" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#278#279#0" expanded="true" />
-            <element signature="e#306#307#0" expanded="true" />
-            <element signature="e#2273#2274#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/controller/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
@@ -468,6 +445,29 @@
             <element signature="imports" expanded="true" />
             <element signature="e#994#995#0" expanded="true" />
             <element signature="e#1022#1023#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/controller/Controller.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="15" column="25" lean-forward="true" selection-start-line="15" selection-start-column="25" selection-end-line="15" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/view/View.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="638">
+          <caret line="54" column="36" lean-forward="true" selection-start-line="54" selection-start-column="36" selection-end-line="54" selection-end-column="36" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#278#279#0" expanded="true" />
+            <element signature="e#306#307#0" expanded="true" />
+            <element signature="e#2273#2274#0" expanded="true" />
           </folding>
         </state>
       </provider>

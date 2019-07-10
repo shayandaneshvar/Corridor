@@ -30,8 +30,8 @@ public class View implements Observer {
             for (int i = 0; i < 9; i++) {
                 Label label = new Label("Z");
                 label.setMinSize(28, 32);
-                label.setStyle("-fx-border-style: DOTTED DOTTED DOTTED " +
-                        "DOTTED;-fx-border-color:RED;-fx-border-width:4px;" +
+                label.setStyle("-fx-border-style: DASHED DASHED DASHED " +
+                        "DASHED;-fx-border-color:RED;-fx-border-width:4px;" +
                         "-fx-background-color: BLACK;-fx-padding: 32px;" +
                         "-fx-text-fill: WHITE");
                 grid.add(label, i, j);
@@ -45,8 +45,8 @@ public class View implements Observer {
                     label.setText("Y");
                 } else {
                     System.out.print("# ");
-                    label.setStyle("-fx-border-style: DOTTED DOTTED DOTTED " +
-                            "DOTTED;-fx-border-color:RED;" +
+                    label.setStyle("-fx-border-style: DASHED DASHED DASHED " +
+                            "DASHED;-fx-border-color:RED;" +
                             "-fx-border-width:4px;" +
                             "-fx-background-color: BLACK;-fx-padding: 32px;" +
                             "-fx-text-fill: BLACK");
