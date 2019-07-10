@@ -14,23 +14,15 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Scene scene = new Scene(root, 1, 1);
+        Scene scene = new Scene(root, 792, 886);
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setTitle("Corridor");
         scene.setFill(Color.GRAY);
-//        Label label = new Label("X");
-//        label.setStyle("-fx-border-style: DOTTED DOTTED SOLID DOTTED;" +
-//                "-fx-border-color: " +
-//                "RED;" +
-//                "-fx-border-width:4px;" +
-//                "-fx-background-color: BLACK;" +
-//                "-fx-padding: 10px;-fx-text-fill: WHITE");
-//        root.getChildren().addAll(label);
         Player player1 = new Player("p1", new Pair<>(4, 0));
         Player player2 = new Player("p2", new Pair<>(4, 8));
         Controller controller = new Controller(new Board(player1, player2),
-                new View(scene));
+                new View(scene,root));
         controller.initialize();
     }
 
