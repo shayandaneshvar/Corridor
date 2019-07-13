@@ -3,11 +3,15 @@ package main.java.controller;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import main.java.model.Block;
 import main.java.model.Board;
 import main.java.model.Direction;
 import main.java.model.Player;
 import main.java.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -228,9 +232,9 @@ public class Controller {
     }
 
     private void checkBehaviour() {
-        boolean isGameOver = false;
-        isGameOver = checkPlayer1State();
-        isGameOver = isGameOver || checkPlayer2State();
+        boolean isGameOver;
+        isGameOver = checkPlayers(board.getPlayer1(), 8);
+        isGameOver = isGameOver || checkPlayers(board.getPlayer2(), 0);
         if (isGameOver) {
             if (turn % 2 == 0) {
                 System.out.println("Player 1 Lost The Game");
@@ -241,14 +245,62 @@ public class Controller {
         }
     }
 
-    private boolean checkPlayer2State() {
-        // TODO: 7/13/2019
-        return false;
+    private boolean checkPlayers(Player player, int row) {
+        LinkedBlockingQueue<Block> queue = new LinkedBlockingQueue<>();
+        queue.add(board.getGameBoard()[player.getLocation().getValue
+                ()][player.getLocation().getKey()]);
+        List<Block> visitedBlocks = new ArrayList<>();
+        do {
+            Block block = queue.poll();
+            if (visitedBlocks.contains(block)) {
+                continue;
+            }
+            visitedBlocks.add(block);
+            if (isValid(block.getLocation().getKey() + 1, block.getLocation()
+                    .getValue(), Sake.RIGHT)) {
+                queue.add(board.getGameBoard()[block.getLocation().getValue()]
+                        [block.getLocation().getKey() + 1]);
+            }
+            if (isValid(block.getLocation().getKey() - 1, block.
+                    getLocation().getValue(), Sake.LEFT)) {
+                queue.add(board.getGameBoard()[block.getLocation().getValue()]
+                        [block.getLocation().getKey() - 1]);
+            }
+            if (isValid(block.getLocation().getKey(), block.getLocation()
+                    .getValue() + 1, Sake.DOWN)) {
+                queue.add(board.getGameBoard()[block.getLocation().getValue()
+                        + 1][block.getLocation().getKey()]);
+            }
+            if (isValid(block.getLocation().getKey(), block.getLocation()
+                    .getValue() - 1, Sake.UP)) {
+                queue.add(board.getGameBoard()[block.getLocation().getValue() -
+                        1][block.getLocation().getKey()]);
+            }
+        } while (!queue.isEmpty());
+        return visitedBlocks.stream().noneMatch(x -> x.getLocation().getValue()
+                == row);
     }
 
-    private boolean checkPlayer1State() {
-        // TODO: 7/13/2019
-        return false;
+    private boolean isValid(int x, int y, Sake sake) {
+        if (x < 0 || y < 0 || x > 8 || y > 8) {
+            return false;
+        }
+        boolean result = false;
+        switch (sake) {
+            case UP:
+                result = !board.getGameBoard()[y][x].getFilledDown();
+                break;
+            case DOWN:
+                result = !board.getGameBoard()[y][x].getFilledUp();
+                break;
+            case LEFT:
+                result = !board.getGameBoard()[y][x].getFilledRight();
+                break;
+            case RIGHT:
+                result = !board.getGameBoard()[y][x].getFilledLeft();
+                break;
+        }
+        return result;
     }
 
     private void isGameOver() {

@@ -1,22 +1,39 @@
 package main.java.model;
 
+import javafx.util.Pair;
+
 public class Block {
-    private Boolean isFilled;
     private Boolean isFilledUp;
     private Boolean isFilledDown;
     private Boolean isFilledRight;
     private Boolean isFilledLeft;
+    private Pair<Integer, Integer> location;
 
-    public Block() {
-        this.isFilled = false;
+    public Block(int x, int y) {
         this.isFilledUp = false;
         this.isFilledDown = false;
         this.isFilledRight = false;
         this.isFilledLeft = false;
+        location = new Pair<>(x, y);
+    }
+
+    public Pair<Integer, Integer> getLocation() {
+        return location;
     }
 
     public void fillUp() {
         isFilledUp = true;
+    }
+
+    @Override
+    public String toString() {
+        return "Block{" +
+                "isFilledUp=" + isFilledUp +
+                ", isFilledDown=" + isFilledDown +
+                ", isFilledRight=" + isFilledRight +
+                ", isFilledLeft=" + isFilledLeft +
+                ", location=" + location.getKey() + "," + location.getValue() +
+                '}';
     }
 
     public void fillDown() {
@@ -29,19 +46,6 @@ public class Block {
 
     public void fillRight() {
         isFilledRight = true;
-    }
-
-    public void fillSelf() {
-        isFilled = true;
-    }
-
-    public void emptySelf() {
-        isFilled = false;
-    }
-
-
-    public Boolean getFilled() {
-        return isFilled;
     }
 
     public Boolean getFilledUp() {

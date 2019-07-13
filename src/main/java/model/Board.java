@@ -17,11 +17,9 @@ public class Board implements Observable {
         gameBoard = new Block[9][9];
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
-                gameBoard[j][i] = new Block();
+                gameBoard[j][i] = new Block(i, j);
             }
         }
-        gameBoard[player1.getLocation().getValue()][player1.getLocation().getKey()].fillSelf();
-        gameBoard[player2.getLocation().getValue()][player2.getLocation().getKey()].fillSelf();
         observers = new ArrayList<>();
     }
 
