@@ -250,14 +250,37 @@ public class Controller {
     }
 
     private void handleDown(Player moving, Player still, Board board) {
-        if (moving.getLocation().getValue() < 8) {
+        if (moving.getLocation().getValue() > 0) {
             turn++;
-            if (moving.getLocation().getValue() + 1 == still.getLocation().getValue() &&
-                    moving.getLocation().getKey() == still.getLocation().getKey()) {
-                moving.moveDown();
-                moving.moveDown();
-            } else {
-                moving.moveDown();
+            if (!board.getGameBoard()[moving.getLocation().getValue() + 1][moving
+                    .getLocation().getKey()].getFilledUp()) {
+                if (moving.getLocation().getValue() + 1 == still.getLocation().getValue() &&
+                        moving.getLocation().getKey() == still.getLocation().getKey()) {
+                    if (moving.getLocation().getValue() + 2 < 9) {
+                        if (!board.getGameBoard()[moving.getLocation().getValue()
+                                + 2][moving.getLocation().getKey()].getFilledUp()) {
+                            moving.moveDown();
+                            moving.moveDown();
+                        } else {
+                            if (moving.getLocation().getValue() + 1 <= 8 &&
+                                    !board.getGameBoard()[moving.getLocation().
+                                            getValue() + 1][moving.getLocation()
+                                            .getKey() + 1].getFilledLeft()) {
+                                moving.moveDown();
+                                moving.moveRight();
+                            } else if (moving.getLocation().getValue() - 1 >= 0
+                                    && !board.getGameBoard()[moving.getLocation().
+                                    getValue() + 1][moving.getLocation().getKey
+                                    () - 1].getFilledRight()) {
+                                moving.moveDown();
+                                moving.moveLeft();
+                            }
+                        }
+                    }
+                } else {
+                    moving.moveDown();
+                }
+
             }
         }
     }
@@ -265,12 +288,35 @@ public class Controller {
     private void handleRight(Player moving, Player still, Board board) {
         if (moving.getLocation().getKey() < 8) {
             turn++;
-            if (moving.getLocation().getKey() + 1 == still.getLocation().getKey() &&
-                    moving.getLocation().getValue() == still.getLocation().getValue()) {
-                moving.moveRight();
-                moving.moveRight();
-            } else {
-                moving.moveRight();
+            if (!board.getGameBoard()[moving.getLocation().getValue()][moving
+                    .getLocation().getKey() + 1].getFilledLeft()) {
+                if (moving.getLocation().getKey() + 1 == still.getLocation().getKey() &&
+                        moving.getLocation().getValue() == still.getLocation().getValue()) {
+                    if (moving.getLocation().getKey() + 2 <= 8) {
+                        if (!board.getGameBoard()[moving.getLocation().getValue()]
+                                [moving.getLocation().getKey() + 2].getFilledLeft()) {
+                            moving.moveRight();
+                            moving.moveRight();
+                        } else {
+                            if (moving.getLocation().getKey() + 1 <= 8 &&
+                                    !board.getGameBoard()[moving.getLocation().
+                                            getValue() - 1][moving.getLocation()
+                                            .getKey() + 1].getFilledLeft()) {
+                                moving.moveUp();
+                                moving.moveRight();
+                            } else if (moving.getLocation().getKey() + 1 < 9
+                                    && !board.getGameBoard()[moving.getLocation().
+                                    getValue() + 1][moving.getLocation().getKey
+                                    () + 1].getFilledLeft()) {
+                                moving.moveDown();
+                                moving.moveRight();
+                            }
+                        }
+                    }
+                } else {
+                    moving.moveRight();
+                }
+
             }
         }
     }
@@ -278,12 +324,35 @@ public class Controller {
     private void handleLeft(Player moving, Player still, Board board) {
         if (moving.getLocation().getKey() > 0) {
             turn++;
-            if (moving.getLocation().getKey() - 1 == still.getLocation().getKey() &&
-                    moving.getLocation().getValue() == still.getLocation().getValue()) {
-                moving.moveLeft();
-                moving.moveLeft();
-            } else {
-                moving.moveLeft();
+            if (!board.getGameBoard()[moving.getLocation().getValue()][moving
+                    .getLocation().getKey() - 1].getFilledRight()) {
+                if (moving.getLocation().getKey() - 1 == still.getLocation().getKey() &&
+                        moving.getLocation().getValue() == still.getLocation().getValue()) {
+                    if (moving.getLocation().getKey() - 2 >= 0) {
+                        if (!board.getGameBoard()[moving.getLocation().getValue()]
+                                [moving.getLocation().getKey() - 2].getFilledRight()) {
+                            moving.moveLeft();
+                            moving.moveLeft();
+                        } else {
+                            if (moving.getLocation().getKey() - 1 >= 0 &&
+                                    !board.getGameBoard()[moving.getLocation().
+                                            getValue() - 1][moving.getLocation()
+                                            .getKey() - 1].getFilledRight()) {
+                                moving.moveUp();
+                                moving.moveLeft();
+                            } else if (moving.getLocation().getKey() + 1 < 9
+                                    && !board.getGameBoard()[moving.getLocation().
+                                    getValue() + 1][moving.getLocation().getKey
+                                    () - 1].getFilledRight()) {
+                                moving.moveDown();
+                                moving.moveLeft();
+                            }
+                        }
+                    }
+                } else {
+                    moving.moveLeft();
+                }
+
             }
         }
     }
