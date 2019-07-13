@@ -180,10 +180,10 @@ public class Controller {
             }
         } else {
             if (!board.getGameBoard()[y][x].getFilledRight() && !board.
-                    getGameBoard()[y+1][x].getFilledRight()) {
+                    getGameBoard()[y + 1][x].getFilledRight()) {
                 board.getGameBoard()[y][x].fillRight();
-                board.getGameBoard()[y+1][x].fillRight();
-                board.getGameBoard()[y][x+1].fillLeft();
+                board.getGameBoard()[y + 1][x].fillRight();
+                board.getGameBoard()[y][x + 1].fillLeft();
                 board.getGameBoard()[y + 1][x + 1].fillLeft();
                 wallFinalizer(x, y, dir);
             }
@@ -216,13 +216,35 @@ public class Controller {
     private void handleUp(Player moving, Player still, Board board) {
         if (moving.getLocation().getValue() > 0) {
             turn++;
-            if (moving.getLocation().getValue() - 1 == still.getLocation().getValue() &&
-                    moving.getLocation().getKey() == still.getLocation().getKey()) {
-                moving.moveUp();
-                moving.moveUp();
-            } else {
-//                if(movin)
-                moving.moveUp();
+            if (!board.getGameBoard()[moving.getLocation().getValue() - 1][moving
+                    .getLocation().getKey()].getFilledDown()) {
+                if (moving.getLocation().getValue() - 1 == still.getLocation().getValue() &&
+                        moving.getLocation().getKey() == still.getLocation().getKey()) {
+                    if (moving.getLocation().getValue() - 2 >= 0) {
+                        if (!board.getGameBoard()[moving.getLocation().getValue()
+                                - 2][moving.getLocation().getKey()].getFilledDown()) {
+                            moving.moveUp();
+                            moving.moveUp();
+                        } else {
+                            if (moving.getLocation().getValue() + 1 < 8 &&
+                                    !board.getGameBoard()[moving.getLocation().
+                                            getValue() - 1][moving.getLocation()
+                                            .getKey() + 1].getFilledLeft()) {
+                                moving.moveUp();
+                                moving.moveRight();
+                            } else if (moving.getLocation().getValue() - 1 >= 0
+                                    && !board.getGameBoard()[moving.getLocation().
+                                    getValue() - 1][moving.getLocation().getKey
+                                    () - 1].getFilledRight()) {
+                                moving.moveUp();
+                                moving.moveLeft();
+                            }
+                        }
+                    }
+                } else {
+                    moving.moveUp();
+                }
+
             }
         }
     }
