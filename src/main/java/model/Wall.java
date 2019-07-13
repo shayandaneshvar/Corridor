@@ -12,4 +12,12 @@ public class Wall {
         this.dir = dir;
         isActive = true;
     }
+
+    public Direction getDir() {
+        return dir;
+    }
+
+    public Boolean getActive() {
+        return isActive;
+    }
 }

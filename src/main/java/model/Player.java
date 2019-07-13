@@ -6,11 +6,21 @@ public class Player {
     private String name;
     private Pair<Integer, Integer> location;
     private Wall[][] walls;
+    private Integer availableWalls;
+
+    public Integer getAvailableWalls() {
+        return availableWalls;
+    }
+
+    private void decrementWalls() {
+        availableWalls--;
+    }
 
     public Player(String name, Pair<Integer, Integer> location) {
         this.name = name;
         this.location = location;
         walls = new Wall[8][8];
+        availableWalls = 10;
     }
 
     public void moveUp() {
@@ -27,6 +37,11 @@ public class Player {
 
     public void moveLeft() {
         location = new Pair<>(location.getKey() - 1, location.getValue());
+    }
+
+    public void putWall(int x, int y, Direction dir) {
+        walls[y][x].setDir(dir);
+        decrementWalls();
     }
 
     public String getName() {

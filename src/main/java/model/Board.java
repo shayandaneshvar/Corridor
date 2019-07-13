@@ -37,6 +37,7 @@ public class Board implements Observable {
         return gameBoard;
     }
 
+
     @Override
     public void addObserver(Observer observer) {
         observers.add(observer);
