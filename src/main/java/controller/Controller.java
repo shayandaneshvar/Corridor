@@ -238,10 +238,11 @@ public class Controller {
         if (isGameOver) {
             if (turn % 2 == 0) {
                 System.out.println("Player 1 Lost The Game");
+                View.drawGameOver(board.getPlayer2().getName());
             } else {
                 System.out.println("Player 2 Lost The Game");
+                View.drawGameOver(board.getPlayer1().getName());
             }
-            Runtime.getRuntime().exit(1);
         }
     }
 
@@ -306,10 +307,10 @@ public class Controller {
     private void isGameOver() {
         if (board.getPlayer1().getLocation().getValue() == 8) {
             System.out.println("Player1 is the winner!");
-            Runtime.getRuntime().exit(1);
+            View.drawGameOver(board.getPlayer1().getName());
         } else if (board.getPlayer2().getLocation().getValue() == 0) {
             System.out.println("Player2 is the winner!");
-            Runtime.getRuntime().exit(1);
+            View.drawGameOver(board.getPlayer2().getName());
         }
     }
 

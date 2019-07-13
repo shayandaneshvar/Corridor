@@ -13,10 +13,6 @@ public class Wall {
         isActive = true;
     }
 
-    public Direction getDir() {
-        return dir;
-    }
-
     public Boolean isActive() {
         return isActive;
     }

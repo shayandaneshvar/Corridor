@@ -19,8 +19,8 @@ public class Main extends Application {
         primaryStage.show();
         primaryStage.setTitle("Corridor");
         scene.setFill(Color.GRAY);
-        Player player1 = new Player("p1", new Pair<>(4, 0));
-        Player player2 = new Player("p2", new Pair<>(4, 8));
+        Player player1 = new Player("Player1", new Pair<>(4, 0));
+        Player player2 = new Player("Player2", new Pair<>(4, 8));
         Controller controller = new Controller(new Board(player1, player2),
                 new View(scene,root));
         controller.initialize();
