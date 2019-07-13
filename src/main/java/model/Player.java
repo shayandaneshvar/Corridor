@@ -20,6 +20,11 @@ public class Player {
         this.name = name;
         this.location = location;
         walls = new Wall[8][8];
+        for (int j = 0; j < 8; j++) {
+            for (int i = 0; i < 8; i++) {
+                walls[j][i] = new Wall();
+            }
+        }
         availableWalls = 10;
     }
 
@@ -42,6 +47,10 @@ public class Player {
     public void putWall(int x, int y, Direction dir) {
         walls[y][x].setDir(dir);
         decrementWalls();
+    }
+
+    public Wall[][] getWalls() {
+        return walls;
     }
 
     public String getName() {

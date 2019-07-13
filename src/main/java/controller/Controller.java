@@ -37,7 +37,6 @@ public class Controller {
         shift.set(KeyCode.K);
         scene.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-
                 dir.set(Direction.HORIZONTAL);
             } else if (event.getButton() == MouseButton.SECONDARY) {
                 dir.set(Direction.VERTICAL);
@@ -53,57 +52,72 @@ public class Controller {
                         if (xCoord.get() == -1) {
                             xCoord.set(1);
                         } else {
-                            handleWall(xCoord.get() - 1,
-                                    handleY(event.getCode()) - 1, dir.get());
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT2:
                         if (xCoord.get() == -1) {
                             xCoord.set(2);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT3:
                         if (xCoord.get() == -1) {
                             xCoord.set(3);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT4:
                         if (xCoord.get() == -1) {
                             xCoord.set(4);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT5:
                         if (xCoord.get() == -1) {
                             xCoord.set(5);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT6:
                         if (xCoord.get() == -1) {
                             xCoord.set(6);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT7:
                         if (xCoord.get() == -1) {
                             xCoord.set(7);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     case DIGIT8:
                         if (xCoord.get() == -1) {
                             xCoord.set(8);
                         } else {
-
+                            handleWall(xCoord.get() - 1, handleY(event.
+                                    getCode()) - 1, dir.get(), xCoord);
+                            dir.set(Direction.HORIZONTAL);
                         }
                         break;
                     default:
@@ -168,24 +182,28 @@ public class Controller {
         return -1;
     }
 
-    private void handleWall(int x, int y, Direction dir) {
-        if (dir == Direction.HORIZONTAL) {
-            if (!board.getGameBoard()[y][x].getFilledDown() && !board.
-                    getGameBoard()[y][x + 1].getFilledDown()) {
-                board.getGameBoard()[y][x].fillDown();
-                board.getGameBoard()[y][x + 1].fillDown();
-                board.getGameBoard()[y + 1][x].fillUp();
-                board.getGameBoard()[y + 1][x + 1].fillUp();
-                wallFinalizer(x, y, dir);
-            }
-        } else {
-            if (!board.getGameBoard()[y][x].getFilledRight() && !board.
-                    getGameBoard()[y + 1][x].getFilledRight()) {
-                board.getGameBoard()[y][x].fillRight();
-                board.getGameBoard()[y + 1][x].fillRight();
-                board.getGameBoard()[y][x + 1].fillLeft();
-                board.getGameBoard()[y + 1][x + 1].fillLeft();
-                wallFinalizer(x, y, dir);
+    private void handleWall(int x, int y, Direction dir, AtomicInteger xCoord) {
+        xCoord.set(-1);
+        if (!board.getPlayer1().getWalls()[y][x].isActive() && !board.getPlayer2
+                ().getWalls()[y][x].isActive()) {
+            if (dir == Direction.HORIZONTAL) {
+                if (!board.getGameBoard()[y][x].getFilledDown() && !board.
+                        getGameBoard()[y][x + 1].getFilledDown()) {
+                    board.getGameBoard()[y][x].fillDown();
+                    board.getGameBoard()[y][x + 1].fillDown();
+                    board.getGameBoard()[y + 1][x].fillUp();
+                    board.getGameBoard()[y + 1][x + 1].fillUp();
+                    wallFinalizer(x, y, dir);
+                }
+            } else {
+                if (!board.getGameBoard()[y][x].getFilledRight() && !board.
+                        getGameBoard()[y + 1][x].getFilledRight()) {
+                    board.getGameBoard()[y][x].fillRight();
+                    board.getGameBoard()[y + 1][x].fillRight();
+                    board.getGameBoard()[y][x + 1].fillLeft();
+                    board.getGameBoard()[y + 1][x + 1].fillLeft();
+                    wallFinalizer(x, y, dir);
+                }
             }
         }
     }
@@ -200,7 +218,37 @@ public class Controller {
                 board.getPlayer2().putWall(x, y, dir);
             }
         }
+        if (turn % 2 == 0) {
+            checkBehaviour();
+        } else {
+            checkBehaviour();
+        }
         turn++;
+        board.updateObservers();
+    }
+
+    private void checkBehaviour() {
+        boolean isGameOver = false;
+        isGameOver = checkPlayer1State();
+        isGameOver = isGameOver || checkPlayer2State();
+        if (isGameOver) {
+            if (turn % 2 == 0) {
+                System.out.println("Player 1 Lost The Game");
+            } else {
+                System.out.println("Player 2 Lost The Game");
+            }
+            Runtime.getRuntime().exit(1);
+        }
+    }
+
+    private boolean checkPlayer2State() {
+        // TODO: 7/13/2019
+        return false;
+    }
+
+    private boolean checkPlayer1State() {
+        // TODO: 7/13/2019
+        return false;
     }
 
     private void isGameOver() {
@@ -244,13 +292,12 @@ public class Controller {
                 } else {
                     moving.moveUp();
                 }
-
             }
         }
     }
 
     private void handleDown(Player moving, Player still, Board board) {
-        if (moving.getLocation().getValue() > 0) {
+        if (moving.getLocation().getValue() < 8) {
             turn++;
             if (!board.getGameBoard()[moving.getLocation().getValue() + 1][moving
                     .getLocation().getKey()].getFilledUp()) {

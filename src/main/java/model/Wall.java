@@ -17,7 +17,7 @@ public class Wall {
         return dir;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return isActive;
     }
 }
