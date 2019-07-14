@@ -1,7 +1,9 @@
 package main.java.controller;
 
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import main.java.model.Block;
 import main.java.model.Board;
@@ -11,6 +13,7 @@ import main.java.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,26 +22,205 @@ public class Controller {
     private Board board;
     private View view;
     private Integer turn;
+    private AtomicReference<KeyCode> shift;
+    private AtomicReference<Direction> dir;
+    private AtomicInteger xCoord;
 
     public Controller(Board board, View view) {
         this.board = board;
         this.view = view;
         turn = 0;
-    }
-
-    public void initialize() {
-        board.addObserver(view);
-        board.updateObservers();
-        handleInputs(view.getScene());
-    }
-
-    private void handleInputs(Scene scene) {
-        AtomicReference<KeyCode> shift = new AtomicReference<>();
-        AtomicReference<Direction> dir = new AtomicReference<>();
-        AtomicInteger xCoord = new AtomicInteger();
+        shift = new AtomicReference<>();
+        dir = new AtomicReference<>();
+        xCoord = new AtomicInteger();
         dir.set(Direction.HORIZONTAL);
         xCoord.set(-1);
         shift.set(KeyCode.K);
+    }
+
+    public static void initialize(Group root, Scene scene) {
+        View.drawMainMenu(root, scene);
+    }
+
+    public void multiPlayer() {
+        handleInputsMulti(view.getScene());
+    }
+
+    public void startView() {
+        board.addObserver(view);
+        board.updateObservers();
+    }
+
+    public void easy() {
+        Function randomPlayer = (board) -> {
+            if (board.getPlayer2().getAvailableWalls() > 0 && Math.abs(new
+                    Random().nextInt()) % 4 == 0) {
+                while (turn % 2 != 0) {
+                    handleWall(Math.abs(new Random().nextInt()) % 8,
+                            Math.abs(new Random().nextInt()) % 8, Direction.
+                                    values()[Math.abs(new Random().nextInt())
+                                    % 2]);
+                }
+            } else {
+                while (turn % 2 != 0) {
+                    switch (Sake.values()[Math.abs(new Random().nextInt())
+                            % 4]) {
+                        case UP:
+                            handleUp(board.getPlayer2(), board.getPlayer1(),
+                                    board);
+                            break;
+                        case DOWN:
+                            handleDown(board.getPlayer2(),
+                                    board.getPlayer1(), board);
+                            break;
+                        case RIGHT:
+                            handleRight(board.getPlayer2(), board.getPlayer1(),
+                                    board);
+                            break;
+                        case LEFT:
+                            handleLeft(board.getPlayer2(), board.getPlayer1(),
+                                    board);
+                            break;
+                    }
+                }
+            }
+        };
+        handleInputsSingle(view.getScene(), randomPlayer);
+    }
+
+    public void hard() {
+// TODO: 7/14/2019
+    }
+
+    public void extreme() {
+// TODO: 7/14/2019
+
+    }
+
+    public void handleInputsSingle(Scene scene, Function function) {
+        scene.setOnMouseClicked(event -> {
+            if (turn % 2 == 0) {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    dir.set(Direction.HORIZONTAL);
+                } else if (event.getButton() == MouseButton.SECONDARY) {
+                    dir.set(Direction.VERTICAL);
+                }
+            }
+        });
+        scene.setOnKeyReleased(event -> {
+            if (turn % 2 == 0) {
+                wallHandler(shift, dir, xCoord, event);
+            }
+        });
+        scene.setOnKeyPressed(event -> {
+            if (turn % 2 == 0) {
+                if (shift.get() != KeyCode.SHIFT) {
+                    shift.set(KeyCode.K);
+                    if (event.getCode() == KeyCode.UP) {
+                        handleUp(board.getPlayer1(), board.getPlayer2(), board);
+                    } else if (event.getCode() == KeyCode.DOWN) {
+                        handleDown(board.getPlayer1(), board.getPlayer2(), board);
+                    } else if (event.getCode() == KeyCode.RIGHT) {
+                        handleRight(board.getPlayer1(), board.getPlayer2(), board);
+                    } else if (event.getCode() == KeyCode.LEFT) {
+                        handleLeft(board.getPlayer1(), board.getPlayer2(), board);
+                    }
+                    board.updateObservers();
+                    isGameOver();
+                }
+            }
+            function.action(board);
+            board.updateObservers();
+        });
+    }
+
+    private void wallHandler(AtomicReference<KeyCode> shift, AtomicReference
+            <Direction> dir, AtomicInteger xCoord, KeyEvent event) {
+        if (event.getCode() == KeyCode.SHIFT) {
+            shift.set(KeyCode.SHIFT);
+        }
+        if (shift.get() == KeyCode.SHIFT && event.getCode() != KeyCode.SHIFT) {
+            switch (event.getCode()) {
+                case DIGIT1:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(1);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT2:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(2);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT3:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(3);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT4:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(4);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT5:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(5);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT6:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(6);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT7:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(7);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                case DIGIT8:
+                    if (xCoord.get() == -1) {
+                        xCoord.set(8);
+                    } else {
+                        handleWall(xCoord.get() - 1, handleY(event.
+                                getCode()) - 1, dir.get(), xCoord);
+                        dir.set(Direction.HORIZONTAL);
+                    }
+                    break;
+                default:
+                    xCoord.set(-1);
+                    shift.set(KeyCode.K);
+            }
+        }
+    }
+
+    private void handleInputsMulti(Scene scene) {
         scene.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
                 dir.set(Direction.HORIZONTAL);
@@ -47,88 +229,7 @@ public class Controller {
             }
         });
         scene.setOnKeyReleased(event -> {
-            if (event.getCode() == KeyCode.SHIFT) {
-                shift.set(KeyCode.SHIFT);
-            }
-            if (shift.get() == KeyCode.SHIFT && event.getCode() != KeyCode.SHIFT) {
-                switch (event.getCode()) {
-                    case DIGIT1:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(1);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT2:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(2);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT3:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(3);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT4:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(4);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT5:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(5);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT6:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(6);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT7:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(7);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    case DIGIT8:
-                        if (xCoord.get() == -1) {
-                            xCoord.set(8);
-                        } else {
-                            handleWall(xCoord.get() - 1, handleY(event.
-                                    getCode()) - 1, dir.get(), xCoord);
-                            dir.set(Direction.HORIZONTAL);
-                        }
-                        break;
-                    default:
-                        xCoord.set(-1);
-                        shift.set(KeyCode.K);
-                }
-            }
+            wallHandler(shift, dir, xCoord, event);
         });
         scene.setOnKeyPressed(event -> {
             if (shift.get() != KeyCode.SHIFT) {
@@ -188,6 +289,11 @@ public class Controller {
 
     private void handleWall(int x, int y, Direction dir, AtomicInteger xCoord) {
         xCoord.set(-1);
+        handleWall(x, y, dir);
+
+    }
+
+    private void handleWall(int x, int y, Direction dir) {
         if (!board.getPlayer1().getWalls()[y][x].isActive() && !board.getPlayer2
                 ().getWalls()[y][x].isActive()) {
             if (dir == Direction.HORIZONTAL) {
