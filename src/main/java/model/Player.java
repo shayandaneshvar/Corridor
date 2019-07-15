@@ -8,6 +8,10 @@ public class Player {
     private Wall[][] walls;
     private Integer availableWalls;
 
+    public void setLocation(Pair<Integer, Integer> location) {
+        this.location = location;
+    }
+
     public Integer getAvailableWalls() {
         return availableWalls;
     }

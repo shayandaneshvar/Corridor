@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.util.Pair;
 import main.java.model.Block;
 import main.java.model.Board;
 import main.java.model.Direction;
@@ -17,6 +18,7 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 public class Controller {
     private Board board;
@@ -89,13 +91,132 @@ public class Controller {
     }
 
     public void hard() {
-// TODO: 7/14/2019
+        Function dijkstraAlgorithm = (board -> {
+            if (board.getPlayer2().getAvailableWalls() > 0 && Math.abs(new
+                    Random().nextInt()) % 3 == 0) {
+                while (turn % 2 != 0) {
+                    handleWall(board.getPlayer1().getLocation().getKey() % 8,
+                            board.getPlayer1().getLocation().getValue() % 8,
+                            Direction.HORIZONTAL);
+                    if (turn % 2 != 0) {
+                        int rand = 7 > board.getPlayer2().getLocation().getValue() ?
+                                2 : 8 - board.getPlayer2().getLocation().getValue();
+                        rand = 7 - Math.abs(new Random().nextInt()) % rand;
+                        handleWall(Math.abs(new Random().nextInt()) % 8, rand,
+                                Direction.values()[Math.abs(new Random().nextInt()) % 3 % 2]);
+                    }
+                }
+            } else {
+                while (turn % 2 != 0) {
+                    Pair<Integer, Integer> nextMove =
+                            findNextMove(board.getPlayer2());
+                    board.getPlayer2().setLocation(nextMove);
+                    if (board.getPlayer2().getLocation().equals(board.getPlayer1().getLocation())) {
+                        board.getPlayer2().moveUp();
+                    }
+                    turn++;
+                }
+                isGameOver();
+            }
+        });
+        handleInputsSingle(view.getScene(), dijkstraAlgorithm);
     }
 
     public void extreme() {
 // TODO: 7/14/2019
-
     }
+
+    //uses Dijkstra Algorithm
+    //This situation has been Ignored oo] *can be improved
+    private Pair<Integer, Integer> findNextMove(Player player) {
+        LinkedBlockingQueue<Triple<Block, Integer, ArrayList<Block>>> queue =
+                new LinkedBlockingQueue<>();
+        queue.add(new Triple<>(board.getGameBoard()[player.getLocation().getValue
+                ()][player.getLocation().getKey()], 0, new ArrayList<>()));
+        List<Triple<Block, Integer, ArrayList<Block>>> visitedBlocks =
+                new ArrayList<>();
+        do {
+            Triple<Block, Integer, ArrayList<Block>> block = queue.poll();
+            if (visitedBlocks.stream().anyMatch(x -> x.getFirst().getLocation().
+                    equals(block.getFirst().getLocation()))) {
+                Triple<Block, Integer, ArrayList<Block>> temp;
+                if (block.getSecond() < (temp = visitedBlocks.stream().filter(x
+                        -> x.getFirst().getLocation().
+                        equals(block.getFirst().getLocation())).collect(
+                        Collectors.toList()).get(0)).getSecond()) {
+                    temp.setSecond(block.getSecond());
+                    temp.setThird(block.getThird());
+                }
+                continue;
+            }
+            visitedBlocks.add(block);
+            int weight;
+            if (isValid(block.getFirst().getLocation().getKey() + 1,
+                    block.getFirst().getLocation()
+                            .getValue(), Sake.RIGHT)) {
+                weight = block.getSecond() + 1;
+                if (player.getLocation().getKey() == block.getFirst().getLocation().getKey() + 1 &&
+                        player.getLocation().getValue() == block.getFirst().getLocation().getValue()) {
+                    weight--;
+                }
+                ArrayList<Block> list = (ArrayList<Block>) block.getThird().clone();
+                list.add(block.getFirst());
+                queue.add(new Triple<>(board.getGameBoard()[block.getFirst().getLocation().getValue()]
+                        [block.getFirst().getLocation().getKey() + 1], weight
+                        , list));
+            }
+            if (isValid(block.getFirst().getLocation().getKey() - 1,
+                    block.getFirst().getLocation().getValue(), Sake.LEFT)) {
+                weight = block.getSecond() + 1;
+                if (player.getLocation().getKey() == block.getFirst().getLocation().getKey() - 1 &&
+                        player.getLocation().getValue() == block.getFirst().getLocation().getValue()) {
+                    weight--;
+                }
+                ArrayList<Block> list = (ArrayList<Block>) block.getThird().clone();
+                list.add(block.getFirst());
+                queue.add(new Triple<>(board.getGameBoard()[block.getFirst().getLocation().getValue()]
+                        [block.getFirst().getLocation().getKey() - 1], weight
+                        , list));
+            }
+            if (isValid(block.getFirst().getLocation().getKey(),
+                    block.getFirst().getLocation()
+                            .getValue() + 1, Sake.DOWN)) {
+                weight = block.getSecond() + 1;
+                if (player.getLocation().getKey() == block.getFirst().getLocation().getKey() &&
+                        player.getLocation().getValue() == block.getFirst().getLocation().getValue() + 1) {
+                    weight--;
+                }
+                ArrayList<Block> list = (ArrayList<Block>) block.getThird().clone();
+                list.add(block.getFirst());
+                queue.add(new Triple<>(board.getGameBoard()[block.getFirst().getLocation().getValue()
+                        + 1][block.getFirst().getLocation().getKey()], weight
+                        , list));
+            }
+            if (isValid(block.getFirst().getLocation().getKey(),
+                    block.getFirst().getLocation()
+                            .getValue() - 1, Sake.UP)) {
+                weight = block.getSecond() + 1;
+                if (player.getLocation().getKey() == block.getFirst().getLocation().getKey() &&
+                        player.getLocation().getValue() == block.getFirst().getLocation().getValue() - 1) {
+                    weight--;
+                }
+                ArrayList<Block> list = (ArrayList<Block>) block.getThird().clone();
+                list.add(block.getFirst());
+                queue.add(new Triple<>(board.getGameBoard()[block.getFirst().getLocation().getValue() -
+                        1][block.getFirst().getLocation().getKey()], weight,
+                        list));
+            }
+        } while (!queue.isEmpty());
+        List<Block> results = visitedBlocks.stream().filter(x -> x.getFirst().getLocation()
+                .getValue() == 0).reduce((x, y) -> x.getSecond() > y.getSecond()
+                ? y : x).get().getThird();
+        if (results.size() <= 1) {
+            board.getPlayer2().moveUp();
+            return board.getPlayer2().getLocation();
+        }
+        return results.get(1).getLocation();
+    }
+
 
     public void handleInputsSingle(Scene scene, Function function) {
         scene.setOnMouseClicked(event -> {
@@ -352,6 +473,14 @@ public class Controller {
         }
     }
 
+    /**
+     * Uses BFS Algorithm in order to check whether the current player has
+     * surrounded him/herself or the other player
+     *
+     * @param player recently played player
+     * @param row    target row
+     * @return a boolean
+     */
     private boolean checkPlayers(Player player, int row) {
         LinkedBlockingQueue<Block> queue = new LinkedBlockingQueue<>();
         queue.add(board.getGameBoard()[player.getLocation().getValue

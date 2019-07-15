@@ -173,7 +173,8 @@ public class View implements Observer {
                 stage.close();
             });
             hard.setOnMouseClicked(event1 -> {
-                Choice.handleChoice(Choice.HARD, root, scene, "You", "DFS");
+                Choice.handleChoice(Choice.HARD, root, scene, "You",
+                        "Dijkstra");
                 stage.close();
             });
             extreme.setOnMouseClicked(event1 -> {
