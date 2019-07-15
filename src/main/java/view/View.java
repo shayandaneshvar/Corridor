@@ -34,13 +34,13 @@ public class View implements Observer {
         this.root = root;
     }
 
-    public static void drawGameOver(String name) {
+    public static void drawGameOver(String name, Color color) {
         Stage stage = new Stage();
         Group root = new Group();
         Scene scene = new Scene(root, 300, 150, true,
                 SceneAntialiasing.BALANCED);
         stage.setTitle("Game Over");
-        scene.setFill(Color.CRIMSON);
+        scene.setFill(color);
         stage.setScene(scene);
         stage.setResizable(false);
         VBox vBox = new VBox();
@@ -67,10 +67,11 @@ public class View implements Observer {
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
+        grid.setPadding(new Insets(12));
         root.getChildren().add(grid);
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
-                Label label = new Label("Z");
+                Label label = new Label(" ");
                 label.setMinSize(28, 32);
 //                label.setBackground(new Background(new BackgroundFill(new LinearGradient(0, 0, 1, 1, true,
 //                        CycleMethod.NO_CYCLE, new Stop(0, Color.DARKBLUE),
@@ -84,28 +85,33 @@ public class View implements Observer {
                 if (board.getPlayer1().getLocation().getKey() == i &&
                         board.getPlayer1().getLocation().getValue() == j) {
                     System.out.print("X ");
-                    label.setText("X");
+                    label.setText(" ");
                     label.setStyle("-fx-border-style: " + borderStyle + ";-fx-border-color" +
-                            ":RED;-fx-border-width:4px;-fx-background-radius: 4% ;"
-                            + "-fx-background-color: BLACK;-fx-padding: 32px;" +
+                            ":#000000;-fx-border-width:5px;" +
+                            "-fx-background-radius: 4% ;"
+                            + "-fx-background-color: Crimson;-fx-padding: " +
+                            "32px;" +
                             "-fx-text-fill: WHITE;-fx-effect: dropshadow" +
-                            "(three-pass-box, red, 10, 0, 0, 0);");
+                            "(three-pass-box, darkred, 10, 0, 0, 0);");
                 } else if (board.getPlayer2().getLocation().getKey() == i &&
                         board.getPlayer2().getLocation().getValue() == j) {
                     System.out.print("O ");
-                    label.setText("Y");
+                    label.setText(" ");
                     label.setStyle("-fx-border-style: " + borderStyle + ";-fx-border-color" +
-                            ":RED;-fx-border-width:4px;-fx-background-radius: 4% ;"
-                            + "-fx-background-color: BLACK;-fx-padding: 32px;" +
-                            "-fx-text-fill: WHITE;-fx-effect: dropshadow" +
+                            ":#000000;-fx-border-width:5px;" +
+                            "-fx-background-radius: 4% ;"
+                            + "-fx-background-color: darkgreen;-fx-padding:" +
+                            " " +
+                            "32px;" +
+                            "-fx-text-fill: #000000;-fx-effect: dropshadow" +
                             "(three-pass-box,blue, 10, 0, 0,0 );");
                 } else {
                     System.out.print("# ");
                     label.setStyle("-fx-border-style:" + borderStyle + ";-fx" +
-                            "-border-color:RED;" +
-                            "-fx-border-width:4px;-fx-background-radius: 4% ;"
-                            + "-fx-background-color: BLACK;-fx-padding: 32px;" +
-                            "-fx-text-fill: BLACK;-fx-effect: dropshadow(" +
+                            "-border-color:#000000;" +
+                            "-fx-border-width:5px;-fx-background-radius: 4% ;"
+                            + "-fx-background-color: #ffdeca;-fx-padding: 32px;" +
+                            "-fx-text-fill: #ffdeca;-fx-effect: dropshadow(" +
                             "three-pass-box, violet, 10, 0, 1, 1);");
                 }
             }
@@ -150,9 +156,9 @@ public class View implements Observer {
         MenuItem exit = new MenuItem("Exit", 500, 180);
         MenuBox menuBox = new MenuBox(singleplayer, multiplayer, exit);
         vBox.getChildren().addAll(title, menuBox);
-        vBox.setTranslateX(146d);
-        vBox.setTranslateY(60d);
-        vBox.setSpacing(60d);
+        vBox.setTranslateX(152d);
+        vBox.setTranslateY(64d);
+        vBox.setSpacing(68d);
         singleplayer.setOnMouseClicked(event -> {
             Stage stage = new Stage();
             Group root1 = new Group();

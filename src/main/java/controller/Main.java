@@ -11,7 +11,8 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         Group root = new Group();
-        Scene scene = new Scene(root, 792, 886, true, SceneAntialiasing.BALANCED);
+        Scene scene = new Scene(root, 796, 910, true,
+                SceneAntialiasing.BALANCED);
         primaryStage.setResizable(false);
         primaryStage.setScene(scene);
         primaryStage.show();

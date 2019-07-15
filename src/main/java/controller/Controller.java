@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.util.Pair;
 import main.java.model.Block;
 import main.java.model.Board;
@@ -465,10 +466,10 @@ public class Controller {
         if (isGameOver) {
             if (turn % 2 == 0) {
                 System.out.println("Player 1 Lost The Game");
-                View.drawGameOver(board.getPlayer2().getName());
+                View.drawGameOver(board.getPlayer2().getName(), Color.ORANGE);
             } else {
                 System.out.println("Player 2 Lost The Game");
-                View.drawGameOver(board.getPlayer1().getName());
+                View.drawGameOver(board.getPlayer1().getName(), Color.ORANGE);
             }
         }
     }
@@ -542,10 +543,10 @@ public class Controller {
     private void isGameOver() {
         if (board.getPlayer1().getLocation().getValue() == 8) {
             System.out.println("Player1 is the winner!");
-            View.drawGameOver(board.getPlayer1().getName());
+            View.drawGameOver(board.getPlayer1().getName(), Color.CRIMSON);
         } else if (board.getPlayer2().getLocation().getValue() == 0) {
             System.out.println("Player2 is the winner!");
-            View.drawGameOver(board.getPlayer2().getName());
+            View.drawGameOver(board.getPlayer2().getName(), Color.GREENYELLOW);
         }
     }
 
