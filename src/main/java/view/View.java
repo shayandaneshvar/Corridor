@@ -110,8 +110,8 @@ public class View implements Observer {
                     label.setStyle("-fx-border-style:" + borderStyle + ";-fx" +
                             "-border-color:#000000;" +
                             "-fx-border-width:5px;-fx-background-radius: 4% ;"
-                            + "-fx-background-color: #ffdeca;-fx-padding: 32px;" +
-                            "-fx-text-fill: #ffdeca;-fx-effect: dropshadow(" +
+                            + "-fx-background-color: #efceba;-fx-padding: 32px;" +
+                            "-fx-text-fill: #efceba;-fx-effect: dropshadow(" +
                             "three-pass-box, violet, 10, 0, 1, 1);");
                 }
             }
@@ -167,8 +167,8 @@ public class View implements Observer {
             stage.setScene(scene1);
             stage.show();
             MenuItem easy = new MenuItem("Easy", 200, 60);
-            MenuItem hard = new MenuItem("Hard", 200, 60);
-            MenuItem extreme = new MenuItem("Extreme", 200, 60);
+            MenuItem hard = new MenuItem("Medium", 200, 60);
+            MenuItem extreme = new MenuItem("Hard", 200, 60);
             VBox vBox1 = new VBox();
             vBox1.setSpacing(4);
             vBox1.setPadding(new Insets(8d));
@@ -179,12 +179,12 @@ public class View implements Observer {
                 stage.close();
             });
             hard.setOnMouseClicked(event1 -> {
-                Choice.handleChoice(Choice.HARD, root, scene, "You",
+                Choice.handleChoice(Choice.MEDIUM, root, scene, "You",
                         "Dijkstra");
                 stage.close();
             });
             extreme.setOnMouseClicked(event1 -> {
-                Choice.handleChoice(Choice.EXTREME, root, scene, "You", "AI");
+                Choice.handleChoice(Choice.HARD, root, scene, "You", "AI");
                 stage.close();
             });
         });

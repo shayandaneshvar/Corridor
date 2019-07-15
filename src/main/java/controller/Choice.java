@@ -8,7 +8,7 @@ import main.java.model.Player;
 import main.java.view.View;
 
 public enum Choice {
-    EASY, HARD, EXTREME, MULTIPLAYER, EXIT;
+    EASY, MEDIUM, HARD, MULTIPLAYER, EXIT;
 
     public static void handleChoice(Choice choice, Group root, Scene scene,
                                     String p1, String p2) {
@@ -21,11 +21,11 @@ public enum Choice {
             case EASY:
                 controller.easy();
                 break;
+            case MEDIUM:
+                controller.medium();
+                break;
             case HARD:
                 controller.hard();
-                break;
-            case EXTREME:
-                controller.extreme();
                 break;
             case MULTIPLAYER:
                 controller.multiPlayer();

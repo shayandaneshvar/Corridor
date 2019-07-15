@@ -18,6 +18,18 @@ public class Board implements Observable {
         for (int j = 0; j < 9; j++) {
             for (int i = 0; i < 9; i++) {
                 gameBoard[j][i] = new Block(i, j);
+                if (j == 0) {
+                    gameBoard[j][i].fillUp();
+                }
+                if (j == 8) {
+                    gameBoard[j][i].fillDown();
+                }
+                if (i == 0) {
+                    gameBoard[j][i].fillLeft();
+                }
+                if (i == 8) {
+                    gameBoard[j][i].fillRight();
+                }
             }
         }
         observers = new ArrayList<>();

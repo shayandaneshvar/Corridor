@@ -27,6 +27,7 @@ public class Controller {
     private Integer turn;
     private AtomicReference<KeyCode> shift;
     private AtomicReference<Direction> dir;
+    private AtomicReference<MouseButton> mouseButton;
     private AtomicInteger xCoord;
 
     public Controller(Board board, View view) {
@@ -39,6 +40,7 @@ public class Controller {
         dir.set(Direction.HORIZONTAL);
         xCoord.set(-1);
         shift.set(KeyCode.K);
+        mouseButton = new AtomicReference<>(MouseButton.PRIMARY);
     }
 
     public static void initialize(Group root, Scene scene) {
@@ -91,7 +93,7 @@ public class Controller {
         handleInputsSingle(view.getScene(), randomPlayer);
     }
 
-    public void hard() {
+    public void medium() {
         Function dijkstraAlgorithm = (board -> {
             if (board.getPlayer2().getAvailableWalls() > 0 && Math.abs(new
                     Random().nextInt()) % 3 == 0) {
@@ -108,23 +110,39 @@ public class Controller {
                     }
                 }
             } else {
-                while (turn % 2 != 0) {
-                    Pair<Integer, Integer> nextMove =
-                            findNextMove(board.getPlayer2());
-                    board.getPlayer2().setLocation(nextMove);
-                    if (board.getPlayer2().getLocation().equals(board.getPlayer1().getLocation())) {
-                        board.getPlayer2().moveUp();
-                    }
-                    turn++;
-                }
-                isGameOver();
+                dijkstra(board);
             }
         });
         handleInputsSingle(view.getScene(), dijkstraAlgorithm);
     }
 
-    public void extreme() {
-// TODO: 7/14/2019
+    // FIXME: 7/15/2019
+    public void hard() {
+        Function fuzzy = (board -> {
+            //gonna use Fuzzy Logic Table - and an Defuzzifier
+            //USE <<JFUZZYLOGIC>> Library
+            if (false) {
+                //todo
+                //putting walls
+            } else {
+                //Moves
+                dijkstra(board);
+            }
+        });
+        handleInputsSingle(view.getScene(), fuzzy);
+    }
+
+    private void dijkstra(Board board) {
+        while (turn % 2 != 0) {
+            Pair<Integer, Integer> nextMove =
+                    findNextMove(board.getPlayer2());
+            board.getPlayer2().setLocation(nextMove);
+            if (board.getPlayer2().getLocation().equals(board.getPlayer1().getLocation())) {
+                board.getPlayer2().moveUp();
+            }
+            turn++;
+        }
+        isGameOver();
     }
 
     //uses Dijkstra Algorithm
@@ -344,6 +362,7 @@ public class Controller {
 
     private void handleInputsMulti(Scene scene) {
         scene.setOnMouseClicked(event -> {
+            mouseButton.set(event.getButton());
             if (event.getButton() == MouseButton.PRIMARY) {
                 dir.set(Direction.HORIZONTAL);
             } else if (event.getButton() == MouseButton.SECONDARY) {
@@ -552,30 +571,32 @@ public class Controller {
 
     private void handleUp(Player moving, Player still, Board board) {
         if (moving.getLocation().getValue() > 0) {
-            turn++;
             if (!board.getGameBoard()[moving.getLocation().getValue() - 1][moving
                     .getLocation().getKey()].getFilledDown()) {
+                turn++;
                 if (moving.getLocation().getValue() - 1 == still.getLocation().getValue() &&
                         moving.getLocation().getKey() == still.getLocation().getKey()) {
-                    if (moving.getLocation().getValue() - 2 >= 0) {
-                        if (!board.getGameBoard()[moving.getLocation().getValue()
-                                - 2][moving.getLocation().getKey()].getFilledDown()) {
+                    if (moving.getLocation().getValue() - 2 >= 0 && !board.getGameBoard()[moving.getLocation().getValue()
+                            - 2][moving.getLocation().getKey()].getFilledDown()) {
+                        moving.moveUp();
+                        moving.moveUp();
+                    } else {
+                        if (moving.getLocation().getValue() + 1 < 8 &&
+                                !board.getGameBoard()[moving.getLocation().
+                                        getValue() - 1][moving.getLocation()
+                                        .getKey() + 1].getFilledLeft() && mouseButton.get() == MouseButton.SECONDARY) {
                             moving.moveUp();
+                            moving.moveRight();
+                            mouseButton.set(MouseButton.PRIMARY);
+                        } else if (moving.getLocation().getValue() - 1 >= 0
+                                && !board.getGameBoard()[moving.getLocation().
+                                getValue() - 1][moving.getLocation().getKey
+                                () - 1].getFilledRight() && mouseButton.get() == MouseButton.PRIMARY) {
                             moving.moveUp();
+                            moving.moveLeft();
                         } else {
-                            if (moving.getLocation().getValue() + 1 < 8 &&
-                                    !board.getGameBoard()[moving.getLocation().
-                                            getValue() - 1][moving.getLocation()
-                                            .getKey() + 1].getFilledLeft()) {
-                                moving.moveUp();
-                                moving.moveRight();
-                            } else if (moving.getLocation().getValue() - 1 >= 0
-                                    && !board.getGameBoard()[moving.getLocation().
-                                    getValue() - 1][moving.getLocation().getKey
-                                    () - 1].getFilledRight()) {
-                                moving.moveUp();
-                                moving.moveLeft();
-                            }
+                            turn--;
+                            mouseButton.set(MouseButton.PRIMARY);
                         }
                     }
                 } else {
@@ -587,104 +608,112 @@ public class Controller {
 
     private void handleDown(Player moving, Player still, Board board) {
         if (moving.getLocation().getValue() < 8) {
-            turn++;
             if (!board.getGameBoard()[moving.getLocation().getValue() + 1][moving
                     .getLocation().getKey()].getFilledUp()) {
+                turn++;
                 if (moving.getLocation().getValue() + 1 == still.getLocation().getValue() &&
                         moving.getLocation().getKey() == still.getLocation().getKey()) {
-                    if (moving.getLocation().getValue() + 2 < 9) {
-                        if (!board.getGameBoard()[moving.getLocation().getValue()
-                                + 2][moving.getLocation().getKey()].getFilledUp()) {
+                    if (moving.getLocation().getValue() + 2 < 9 && !board.getGameBoard()[moving.getLocation().getValue()
+                            + 2][moving.getLocation().getKey()].getFilledUp()) {
+                        moving.moveDown();
+                        moving.moveDown();
+                    } else {
+                        if (moving.getLocation().getValue() + 1 <= 8 &&
+                                !board.getGameBoard()[moving.getLocation().
+                                        getValue() + 1][moving.getLocation()
+                                        .getKey() + 1].getFilledLeft() && mouseButton.get() == MouseButton.SECONDARY) {
                             moving.moveDown();
+                            moving.moveRight();
+                            mouseButton.set(MouseButton.PRIMARY);
+                        } else if (moving.getLocation().getValue() - 1 >= 0
+                                && !board.getGameBoard()[moving.getLocation().
+                                getValue() + 1][moving.getLocation().getKey
+                                () - 1].getFilledRight() && mouseButton.get() == MouseButton.PRIMARY) {
                             moving.moveDown();
+                            moving.moveLeft();
                         } else {
-                            if (moving.getLocation().getValue() + 1 <= 8 &&
-                                    !board.getGameBoard()[moving.getLocation().
-                                            getValue() + 1][moving.getLocation()
-                                            .getKey() + 1].getFilledLeft()) {
-                                moving.moveDown();
-                                moving.moveRight();
-                            } else if (moving.getLocation().getValue() - 1 >= 0
-                                    && !board.getGameBoard()[moving.getLocation().
-                                    getValue() + 1][moving.getLocation().getKey
-                                    () - 1].getFilledRight()) {
-                                moving.moveDown();
-                                moving.moveLeft();
-                            }
+                            turn--;
+                            mouseButton.set(MouseButton.PRIMARY);
                         }
                     }
                 } else {
                     moving.moveDown();
                 }
-
             }
         }
     }
 
     private void handleRight(Player moving, Player still, Board board) {
         if (moving.getLocation().getKey() < 8) {
-            turn++;
             if (!board.getGameBoard()[moving.getLocation().getValue()][moving
                     .getLocation().getKey() + 1].getFilledLeft()) {
+                turn++;
                 if (moving.getLocation().getKey() + 1 == still.getLocation().getKey() &&
                         moving.getLocation().getValue() == still.getLocation().getValue()) {
-                    if (moving.getLocation().getKey() + 2 <= 8) {
-                        if (!board.getGameBoard()[moving.getLocation().getValue()]
-                                [moving.getLocation().getKey() + 2].getFilledLeft()) {
+
+                    if (moving.getLocation().getKey() + 2 < 9 && !board.getGameBoard()[moving.getLocation().getValue()]
+                            [moving.getLocation().getKey() + 2].getFilledLeft()) {
+                        moving.moveRight();
+                        moving.moveRight();
+                    } else {
+                        if (moving.getLocation().getKey() + 1 <= 8 &&
+                                !board.getGameBoard()[moving.getLocation().
+                                        getValue() - 1][moving.getLocation()
+                                        .getKey() + 1].getFilledDown() && mouseButton.get() == MouseButton.PRIMARY) {
                             moving.moveRight();
+                            moving.moveUp();
+                        } else if (moving.getLocation().getKey() + 1 < 9
+                                && !board.getGameBoard()[moving.getLocation().
+                                getValue() + 1][moving.getLocation().getKey
+                                () + 1].getFilledUp() && mouseButton.get() == MouseButton.SECONDARY) {
+                            moving.moveDown();
                             moving.moveRight();
+                            mouseButton.set(MouseButton.PRIMARY);
                         } else {
-                            if (moving.getLocation().getKey() + 1 <= 8 &&
-                                    !board.getGameBoard()[moving.getLocation().
-                                            getValue() - 1][moving.getLocation()
-                                            .getKey() + 1].getFilledLeft()) {
-                                moving.moveUp();
-                                moving.moveRight();
-                            } else if (moving.getLocation().getKey() + 1 < 9
-                                    && !board.getGameBoard()[moving.getLocation().
-                                    getValue() + 1][moving.getLocation().getKey
-                                    () + 1].getFilledLeft()) {
-                                moving.moveDown();
-                                moving.moveRight();
-                            }
+                            turn--;
+                            mouseButton.set(MouseButton.PRIMARY);
                         }
                     }
+
                 } else {
                     moving.moveRight();
                 }
-
             }
         }
     }
 
     private void handleLeft(Player moving, Player still, Board board) {
         if (moving.getLocation().getKey() > 0) {
-            turn++;
             if (!board.getGameBoard()[moving.getLocation().getValue()][moving
                     .getLocation().getKey() - 1].getFilledRight()) {
+                turn++;
                 if (moving.getLocation().getKey() - 1 == still.getLocation().getKey() &&
                         moving.getLocation().getValue() == still.getLocation().getValue()) {
-                    if (moving.getLocation().getKey() - 2 >= 0) {
-                        if (!board.getGameBoard()[moving.getLocation().getValue()]
-                                [moving.getLocation().getKey() - 2].getFilledRight()) {
+
+                    if (moving.getLocation().getKey() - 2 >= 0 && !board.getGameBoard()[moving.getLocation().getValue()]
+                            [moving.getLocation().getKey() - 2].getFilledRight()) {
+                        moving.moveLeft();
+                        moving.moveLeft();
+                    } else {
+                        if (moving.getLocation().getKey() - 1 >= 0 &&
+                                !board.getGameBoard()[moving.getLocation().
+                                        getValue() - 1][moving.getLocation()
+                                        .getKey() - 1].getFilledDown() && mouseButton.get() == MouseButton.SECONDARY) {
                             moving.moveLeft();
+                            moving.moveUp();
+                            mouseButton.set(MouseButton.PRIMARY);
+                        } else if (moving.getLocation().getKey() + 1 < 9
+                                && !board.getGameBoard()[moving.getLocation().
+                                getValue() + 1][moving.getLocation().getKey
+                                () - 1].getFilledUp() && mouseButton.get() == MouseButton.PRIMARY) {
                             moving.moveLeft();
+                            moving.moveDown();
                         } else {
-                            if (moving.getLocation().getKey() - 1 >= 0 &&
-                                    !board.getGameBoard()[moving.getLocation().
-                                            getValue() - 1][moving.getLocation()
-                                            .getKey() - 1].getFilledRight()) {
-                                moving.moveUp();
-                                moving.moveLeft();
-                            } else if (moving.getLocation().getKey() + 1 < 9
-                                    && !board.getGameBoard()[moving.getLocation().
-                                    getValue() + 1][moving.getLocation().getKey
-                                    () - 1].getFilledRight()) {
-                                moving.moveDown();
-                                moving.moveLeft();
-                            }
+                            turn--;
+                            mouseButton.set(MouseButton.PRIMARY);
                         }
                     }
+
                 } else {
                     moving.moveLeft();
                 }
